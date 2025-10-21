@@ -10,7 +10,11 @@ class Config:
     DATABASE_URL = os.getenv('DATABASE_URL')
     
     if DATABASE_URL:
-        SQLALCHEMY_DATABASE_URI = DATABASE_URL
+        # Replace mysql:// with mysql+pymysql:// to ensure PyMySQL is used
+        if DATABASE_URL.startswith('mysql://'):
+            SQLALCHEMY_DATABASE_URI = DATABASE_URL.replace('mysql://', 'mysql+pymysql://', 1)
+        else:
+            SQLALCHEMY_DATABASE_URI = DATABASE_URL
     else:
         DB_HOST = os.getenv('DATABASE_HOST', 'localhost')
         DB_PORT = os.getenv('DATABASE_PORT', '3306')
